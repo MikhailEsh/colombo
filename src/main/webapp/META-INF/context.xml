@@ -1,0 +1,27 @@
+<Context>
+    <Resource
+            name="jms/MyQueueConnectionFactory"
+            auth="Container"
+            type="com.ibm.mq.jms.MQQueueConnectionFactory"
+            factory="com.ibm.mq.jms.MQQueueConnectionFactoryFactory"
+            description="JMS Queue Connection Factory for sending messages"
+            HOST="localhost"
+            PORT="2414"
+            CHAN="IB9QMGR.MYTEST"
+            TRAN="1"
+            QMGR="IB9QMGR"/>
+    <Resource
+            name="jms/MyQueueOut"
+            auth="Container"
+            type="com.ibm.mq.jms.MQQueue"
+            factory="com.ibm.mq.jms.MQQueueFactory"
+            description="JMS Queue for receiving messages from Dialog"
+            QU="ESB.ASBS.OUT"/>
+    <Resource
+            name="jms/MyQueueIn"
+            auth="Container"
+            type="com.ibm.mq.jms.MQQueue"
+            factory="com.ibm.mq.jms.MQQueueFactory"
+            description="JMS Queue for receiving messages from Dialog"
+            QU="ESB.ASBS.IN"/>
+</Context>

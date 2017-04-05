@@ -1,0 +1,21 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="PrivateOperStateRq_Type">
+		<xs:sequence>
+			<xs:element name="RqUID" type="UUID"/>
+			<xs:element name="RqTm" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PrivateOperStateRq" type="PrivateOperStateRq_Type">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="UUID">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9a-zA-Z]{32}"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
