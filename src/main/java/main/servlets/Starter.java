@@ -1,6 +1,8 @@
 package main.servlets;
 
 import main.jms.JMSRun;
+import main.logger.entity.Log;
+import main.logger.service.LogService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -23,7 +25,7 @@ public class Starter extends HttpServlet {
         long time = date.getTime();
         Timestamp putTime = new Timestamp(time);
         System.out.println(putTime);
-        System.out.println("main.Starter started Misha 12");
+        System.out.println("main.Starter started Misha");
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:context.xml");
         JMSRun jmsRun = (JMSRun)context.getBean("jMSRun");
         Thread threadReaderJMS = new Thread(jmsRun);
@@ -31,12 +33,11 @@ public class Starter extends HttpServlet {
         System.out.println("init ended Misha");
     }
 
+    //Для отладки
     public static void main(String[] s) {
         System.out.println("HttpServlet - run - MISHA1");
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:context.xml");
-        JMSRun jmsRun = (JMSRun)context.getBean("jMSRun");
-        Thread threadReaderJMS = new Thread(jmsRun);
-        threadReaderJMS.start();
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:context_logger.xml");
+        LogService logService = (LogService)context.getBean("logServiceSchedulerImpl");
         System.out.println("HttpServlet - run - MISkHA2");
     }
 }

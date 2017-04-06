@@ -13,16 +13,15 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class ServiceLogImplStub implements LogService{
 
-    public Log saveLog(String bodyString, Class c) throws ParserConfigurationException, SAXException
-    {
-        return null;
+    public void saveLog(String bodyString, Class savedClass) {
+
     }
 
-    public Log saveLog(PrivateOperStateRq privateOperStateRq, Class c) {
-        return null;
+    public void saveLog(PrivateOperStateRq privateOperStateRq, Class savedClass) {
+
     }
 
-    public Log saveLog(PrivateOperStateRs privateOperStateRs, Class c) throws ParserConfigurationException, SAXException {
-        return null;
+    public void saveLog(PrivateOperStateRs privateOperStateRs, Class savedClass) {
+
     }
 }

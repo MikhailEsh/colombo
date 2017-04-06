@@ -38,19 +38,16 @@ public class MessageProcessorSchedulerImpl implements MessageProcessor{
     private ExecutorService executorService;
 
 
-    static protected AtomicInteger counterThreads;
+    static protected AtomicInteger counterThreads = new AtomicInteger(0);
 
     public MessageProcessorSchedulerImpl()
     {
-        counterThreads = new AtomicInteger(0);
         this.queueMsgWrapForMsgProcessor = new ArrayBlockingQueue<MessageWrapper>(maxLengthQueue);
         executorService = Executors.newCachedThreadPool();
-
-
     }
 
     @PostConstruct
-    public void init()
+    public void startFlow()
     {
         for (int i = 0; i < countThread; i++) {
             MessageProcessorSingleImpl messageProcessorSingle = (MessageProcessorSingleImpl)applicationContext.getBean("messageProcessorSingleImpl");

@@ -50,7 +50,7 @@ public class MessageProcessorSingleImpl implements MessageProcessor, Runnable{
     @Autowired
     volatile private RemoteConnectionSender remoteConnectionSender;
 
-    volatile private int nameThread;
+    private int nameThread;
 
     public MessageProcessorSingleImpl(){
 
@@ -81,10 +81,6 @@ public class MessageProcessorSingleImpl implements MessageProcessor, Runnable{
             }
             System.out.println("Message sent");
         } catch (JAXBException e) {
-            SystemLog.SaveErrorLog(this.getClass(), e);
-        } catch (SAXException e) {
-            SystemLog.SaveErrorLog(this.getClass(), e);
-        } catch (ParserConfigurationException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
         } catch (JMSException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);

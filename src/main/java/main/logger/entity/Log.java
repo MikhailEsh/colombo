@@ -41,7 +41,7 @@ public class Log implements Serializable {
     private String adapter;
 
     @Column(name = "NAMETHREAD", nullable = false, length = 20)
-    private String nameThread = "nameThread";
+    private String nameThread = "nameThreadDefault";
 
 
     @Column(name = "body", columnDefinition = "CLOB NOT NULL")
@@ -108,4 +108,7 @@ public class Log implements Serializable {
     }
 
 
+    public void setNameThread(String nameThread) {
+        this.nameThread = nameThread;
+    }
 }

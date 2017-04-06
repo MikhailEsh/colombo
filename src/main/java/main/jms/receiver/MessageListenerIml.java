@@ -57,10 +57,6 @@ public class MessageListenerIml implements MessageListener {
             messageProcessor.execMessage(messageWrapper);
         } catch (NullPointerException e ) {
             SystemLog.SaveErrorLog(this.getClass(), e);
-        }  catch (SAXException e) {
-            SystemLog.SaveErrorLog(this.getClass(), e);
-        } catch (ParserConfigurationException e) {
-            SystemLog.SaveErrorLog(this.getClass(), e);
         }
 
     }

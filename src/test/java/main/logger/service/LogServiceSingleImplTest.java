@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 //@DirtiesContext
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = DataConfigTest.class)
-public class LogServiceImplTest {
+public class LogServiceSingleImplTest {
 
     /*@Resource
     private EntityManagerFactory emf;
