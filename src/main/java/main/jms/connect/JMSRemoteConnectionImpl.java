@@ -70,11 +70,13 @@ public class JMSRemoteConnectionImpl implements RemoteConnection {
         System.out.println("QueueConnection JMS is started");
     }
 
-    public QueueSession getSession() {
-        return session;
+
+    public void sendRequest(String request) throws JMSException {
+        TextMessage message = session.createTextMessage(request);
+        sender.send(message);
     }
 
-    public QueueSender getSender() {
-        return sender;
+    public Session getSession() {
+        return this.session;
     }
 }

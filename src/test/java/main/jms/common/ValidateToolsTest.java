@@ -3,7 +3,7 @@ package main.jms.common;
 import com.google.common.io.Resources;
 import org.junit.Before;
 import org.junit.Test;
-import main.utils.TestUtils;
+import main.utils.TestDatas;
 
 import java.net.URL;
 
@@ -12,26 +12,24 @@ import java.net.URL;
  */
 public class ValidateToolsTest {
 
-    public TestUtils testUtils = new TestUtils();
-
-    private byte[] xml ;
-
-    private URL xsdURL;
+    public TestDatas testDatas = new TestDatas();
+    private byte[] testXml;
+    private URL testXSD;
 
 
 
     @Before
     public void init()
     {
-        xml = testUtils.getTextMessage().getBytes();
-        xsdURL = Resources.getResource(this.getClass(),
-                (testUtils.getTestXSD()));
+        testXml = testDatas.getTestText().getBytes();
+        testXSD = Resources.getResource(this.getClass(),
+                (testDatas.getTestXSD()));
     }
 
     @Test
     public void call()
     {
         ValidateTools validateTools = new ValidateToolsImpl();
-        validateTools.validateByURL(xsdURL, xml);
+        validateTools.validateByURL(testXSD, testXml);
     }
 }

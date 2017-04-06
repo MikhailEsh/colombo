@@ -10,6 +10,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
 
@@ -80,9 +81,10 @@ public class ValidateToolsImpl implements ValidateTools {
         StreamSource streamSource = new StreamSource(new ByteArrayInputStream(xml));
         try {
             jaxpValidator.validate(streamSource);
-        } catch (Exception e) {
+        } catch (SAXException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
-            System.out.println("Exeption validate");
+        } catch (IOException e) {
+            SystemLog.SaveErrorLog(this.getClass(), e);
         }
     }
 

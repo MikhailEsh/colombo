@@ -10,7 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import main.utils.TestUtils;
+import main.utils.TestDatas;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -25,7 +25,7 @@ import javax.persistence.EntityManagerFactory;
 @ContextConfiguration(classes = DataConfigTest.class)
 public class LogServiceImplTest {
 
-    /*@Resource
+    @Resource
     private EntityManagerFactory emf;
     protected EntityManager em;
 
@@ -33,7 +33,7 @@ public class LogServiceImplTest {
     LogService logService;
 
 
-    private TestUtils testUtils = new TestUtils();
+    private TestDatas testDatas = new TestDatas();
     private String testTextMessage;
     private PrivateOperStateRq testPrivateOperStateRq;
     private PrivateOperStateRs testPrivateOperStateRs;
@@ -41,9 +41,9 @@ public class LogServiceImplTest {
     @Before
     @Transactional
     public void setUp() throws Exception {
-        testTextMessage = testUtils.getTextMessage();
-        testPrivateOperStateRq = testUtils.getTestPrivateOperStateRq();
-        testPrivateOperStateRs = testUtils.getTestPrivateOperStateRs();
+        testTextMessage = testDatas.getTestText();
+        testPrivateOperStateRq = testDatas.getTestPrivateOperStateRq();
+        testPrivateOperStateRs = testDatas.getTestPrivateOperStateRs();
         em = emf.createEntityManager();
     }
 
@@ -60,10 +60,6 @@ public class LogServiceImplTest {
     @Test
     public void testSaveBankByObjectRs() throws Exception {
         logService.saveLog(testPrivateOperStateRs, this.getClass());
-    }*/
-    @Test
-    public void testSaveBankByObjectRs() throws Exception {
-
     }
 
 }

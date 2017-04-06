@@ -8,6 +8,6 @@ import javax.jms.MessageListener;
  */
 public class MessageListenerStubImpl implements MessageListener {
     public void onMessage(Message message) {
-
+        System.out.println("MessageListenerStubImpl");
     }
 }

@@ -33,7 +33,10 @@ public class Starter extends HttpServlet {
 
     public static void main(String[] s) {
         System.out.println("HttpServlet - run - MISHA1");
-
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:context.xml");
+        JMSRun jmsRun = (JMSRun)context.getBean("jMSRun");
+        Thread threadReaderJMS = new Thread(jmsRun);
+        threadReaderJMS.start();
         System.out.println("HttpServlet - run - MISkHA2");
     }
 }

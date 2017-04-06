@@ -1,7 +1,7 @@
 package main.jms.common;
 
 import main.schemas.srvprivateoperstate.PrivateOperStateRq;
-import main.utils.TestUtils;
+import main.utils.TestDatas;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import java.text.ParseException;
  */
 public class MarshallingObjectTest {
 
-    private TestUtils testUtils;
+    private TestDatas testDatas;
     private byte[] bodyBytes;
     private Class testClass;
     private PrivateOperStateRq sampleObject;
@@ -24,11 +24,11 @@ public class MarshallingObjectTest {
 
     @Before
     public void init() throws ParseException, DatatypeConfigurationException {
-        testUtils = new TestUtils();
-        bodyBytes = testUtils.getTextMessage().getBytes();
+        testDatas = new TestDatas();
+        bodyBytes = testDatas.getTestText().getBytes();
         testClass = PrivateOperStateRq.class;
-        sampleObject = testUtils.getTestPrivateOperStateRq();
-        sampleXML = testUtils.getTextMessage();
+        sampleObject = testDatas.getTestPrivateOperStateRq();
+        sampleXML = testDatas.getTestText();
 
     }
 

@@ -3,7 +3,7 @@ package main.jms.receiver;
 import main.Utils;
 import main.jms.common.MessageWrapper;
 import main.jms.common.MarshallingObject;
-import main.jms.sender.JMSSender;
+import main.jms.connect.RemoteConnection;
 import main.logger.service.LogService;
 import main.logger.service.SystemLog;
 import main.schemas.srvprivateoperstate.PrivateOperStateRq;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import javax.annotation.PostConstruct;
+import javax.jms.JMSException;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.concurrent.BlockingQueue;
@@ -31,17 +32,25 @@ public class MessageProcessorSingleImpl implements MessageProcessor{
 
     private BlockingQueue<MessageWrapper> queueMsMessageWrappers;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    public MessageProcessorSingleImpl() {};
+
+    public MessageProcessorSingleImpl(LogService logService, MarshallingObject marshallingObject, RemoteConnection remoteConnection){
+        this.logService = logService;
+        this.marshallingObject = marshallingObject;
+        this.remoteConnection = remoteConnection;
+    }
 
     @Autowired
-    private JMSSender jmsSender;
+    private ApplicationContext applicationContext;
 
     @Autowired
     private LogService logService;
 
     @Autowired
     private MarshallingObject marshallingObject;
+
+    @Autowired
+    private RemoteConnection remoteConnection;
 
     //private final int nameThread;
 
@@ -65,21 +74,21 @@ public class MessageProcessorSingleImpl implements MessageProcessor{
         PrivateOperStateRq privateOperStateRq = null;
         try {
             //Utils.TimeWaite();
-            System.out.println("MessageProcessorSingleImpl get");
             privateOperStateRq = (PrivateOperStateRq) marshallingObject.getObject(messageWrapper.getBodyBytes(), PrivateOperStateRq.class);
-            System.out.println("marshallingObject success");
             logService.saveLog(privateOperStateRq, this.getClass());
-            System.out.println("marshallingObject saveLog success");
             PrivateOperStateRs privateOperStateRs = transformToRs(privateOperStateRq);
-            System.out.println("transformToRs success");
             logService.saveLog(privateOperStateRs, this.getClass());
-            System.out.println("Log Saved succes");
-            jmsSender.sendRequest(privateOperStateRs);
+            String xmlRs = marshallingObject.getXML(privateOperStateRs);
+            logService.saveLog(xmlRs, this.getClass());
+            remoteConnection.sendRequest(xmlRs);
+            System.out.println("Message sent");
         } catch (JAXBException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
         } catch (SAXException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
         } catch (ParserConfigurationException e) {
+            SystemLog.SaveErrorLog(this.getClass(), e);
+        } catch (JMSException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
         }
     }

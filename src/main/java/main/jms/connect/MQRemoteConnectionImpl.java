@@ -2,14 +2,19 @@ package main.jms.connect;
 
 import com.ibm.mq.jms.*;
 import main.logger.service.SystemLog;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.jms.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-//@Component
-//@Scope("singleton")
+@Component
+@Primary
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MQRemoteConnectionImpl implements RemoteConnection {
 
     private String host;
@@ -40,37 +45,19 @@ public class MQRemoteConnectionImpl implements RemoteConnection {
         connectionFactory = new MQQueueConnectionFactory();
     };
 
-    public MQQueueSession getSession()
-    {
-        return this.session;
+    public void sendRequest(String request) throws JMSException {
+        TextMessage message = session.createTextMessage(request);
+        sender.send(message);
     }
 
-    public MQRemoteConnectionImpl(
-            String host,
-            String port,
-            String queueManager,
-            String channel,
-            String transportType,
-            String inputQueueName,
-            String outputQueueName) throws JMSException {
-        this.host = host;
-        this.port = Integer.parseInt(port);
-        this.queueManager = queueManager;
-        this.channel = channel;
-        this.transportType = Integer.parseInt(transportType);
-        this.inputQueueName = inputQueueName;
-        this.outputQueueName = outputQueueName;
-
-        connectionFactory = new MQQueueConnectionFactory();
-
-        connectionFactory.setHostName(host);
-        connectionFactory.setPort(this.port);
-        connectionFactory.setTransportType(this.transportType);
-        connectionFactory.setQueueManager(queueManager);
-        connectionFactory.setChannel(channel);
+    public void runConnectListner(MessageListener messageListener) throws JMSException, InterruptedException {
+        if (session.isEmpty())
+            throw new JMSException("Сессия неактивна, проверьте, есть ли подключение");
+        consumer.setMessageListener(messageListener);
+        connection.start();
     }
 
-    public void setConnectionSetting(Properties properties) throws IOException, JMSException {
+    private void setConnectionSetting(Properties properties) throws IOException, JMSException {
                 this.host = properties.getProperty("host");
                 this.port =  Integer.parseInt(properties.getProperty("port"));
                 this.queueManager = properties.getProperty("queueManager");
@@ -86,32 +73,16 @@ public class MQRemoteConnectionImpl implements RemoteConnection {
                 connectionFactory.setChannel(channel);
     }
 
-    public MQQueueSender getSender() {
-        return sender;
-    }
 
-    public void runConnectListner(MessageListener messageListener) throws JMSException, InterruptedException {
-        if (session.isEmpty())
-            throw new JMSException("Сессия неактивна, проверьте, есть ли подключение");
-        consumer.setMessageListener(messageListener);
-        System.out.println("try to connect to MQ... ");
-        connection.start();
-        System.out.println("connection successful");
-    }
 
     private void connectRun() throws JMSException, InterruptedException
     {
-        System.out.println("init connection");
         connection = (MQQueueConnection) connectionFactory.createQueueConnection();
         session = (MQQueueSession) connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-        System.out.println("add input queue " + inputQueueName);
         inputQueue = (MQQueue) session.createQueue(inputQueueName);
-        System.out.println("add output queue " + outputQueueName);
         outputQueue = (MQQueue) session.createQueue(outputQueueName);
-        System.out.println("create sender");
         sender = (MQQueueSender) session.createSender(outputQueue);
-        System.out.println("create receiver");
-        receiver = (MQQueueReceiver) session.createReceiver(inputQueue, "");
+        receiver = (MQQueueReceiver) session.createReceiver(inputQueue);
         Destination destination = session.createQueue(inputQueueName);
         consumer = session.createConsumer(destination);
     }
@@ -140,5 +111,9 @@ public class MQRemoteConnectionImpl implements RemoteConnection {
         } catch (InterruptedException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
         }
+    }
+
+    public Session getSession() {
+        return this.session;
     }
 }
