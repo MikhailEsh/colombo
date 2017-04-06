@@ -17,11 +17,11 @@ import java.util.Properties;
 @ComponentScan("main.logger")
 public class DataConfigTest {
 
-    private static final String PROPERTY_NAME_DATABASE_DRIVER = "oracle.jdbc.OracleDriver";
-    private static final String PROPERTY_NAME_DATABASE_PASSWORD = "COLOMBO_LOG";
-    private static final String PROPERTY_NAME_DATABASE_URL = "jdbc:oracle:thin:@localhost:1521/xe";
+    private static final String PROPERTY_NAME_DATABASE_DRIVER = "org.sqlite.JDBC";
+    private static final String PROPERTY_NAME_DATABASE_PASSWORD = "";
+    private static final String PROPERTY_NAME_DATABASE_URL = "jdbc:sqlite:LOGS.db";
     private static final String PROPERTY_NAME_DATABASE_USERNAME = "COLOMBO_LOG";
-    private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "org.hibernate.dialect.Oracle8iDialect";
+    private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "org.hibernate.dialect.SQLiteDialect";
     //private static final String PROPERTY_HIBERNATE_DIALECT = "db.hibernate.dialect";
     private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "true";
     private static final String PROPERTY_NAME_ENTITYMANAGER_PACKAGES_TO_SCAN = "main.logger.entity";

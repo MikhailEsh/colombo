@@ -1,6 +1,7 @@
 package main.jms;
 
-import main.jms.connect.RemoteConnection;
+import main.jms.connect.RemoteConnectionReader;
+import main.jms.connect.RemoteConnectionSender;
 import main.jms.receiver.MessageListenerIml;
 import main.logger.service.SystemLog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ public class JMSRun implements Runnable {
 
 
     @Autowired
-    private RemoteConnection remoteConnection;
+    private RemoteConnectionReader remoteConnectionReader;
+
+    @Autowired
+    private RemoteConnectionSender remoteConnectionSender;
 
     @Autowired
     MessageListenerIml messageListener;
@@ -24,8 +28,10 @@ public class JMSRun implements Runnable {
     public void run()
     {
         try {
-            remoteConnection.connect();
-            remoteConnection.runConnectListner(messageListener);
+            remoteConnectionSender.connect();
+            remoteConnectionReader.connect();
+            remoteConnectionReader.runConnectListner(messageListener);
+
             for (;;) {
                 Thread.sleep(500);
             }

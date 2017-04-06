@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
@@ -21,8 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by sbt-eshtokin-ml on 03.04.2017.
  */
-//@Component
-//@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Component
+@Primary
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MessageProcessorSchedulerImpl implements MessageProcessor{
 
     private final int countThread = 3;
@@ -47,7 +49,7 @@ public class MessageProcessorSchedulerImpl implements MessageProcessor{
 
     }
 
-    /*@PostConstruct
+    @PostConstruct
     public void init()
     {
         for (int i = 0; i < countThread; i++) {
@@ -55,7 +57,7 @@ public class MessageProcessorSchedulerImpl implements MessageProcessor{
             executorService.execute(messageProcessorSingle);
         }
         executorService.shutdown();
-    }*/
+    }
 
     public void execMessage(MessageWrapper messageWrapperRq) {
         try {

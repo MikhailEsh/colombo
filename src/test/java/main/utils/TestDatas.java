@@ -1,15 +1,7 @@
 package main.utils;
 
-import com.ibm.disthub2.impl.jms.BytesMessageImpl;
-import main.jms.connect.RemoteConnection;
-import main.jms.connect.MQRemoteConnectionImpl;
-import main.jms.receiver.stubs.MessageListenerStubImpl;
 import main.schemas.srvprivateoperstate.*;
 
-import javax.jms.BytesMessage;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;

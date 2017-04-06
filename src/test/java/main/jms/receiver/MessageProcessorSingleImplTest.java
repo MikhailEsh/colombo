@@ -4,8 +4,8 @@ import main.jms.common.MarshallingObject;
 import main.jms.common.MessageWrapper;
 import main.jms.common.stubs.MarshallingObjectImplStub;
 import main.jms.common.stubs.MessageWrapperImplStub;
-import main.jms.connect.RemoteConnection;
-import main.jms.connect.stubs.RemoteConnectionImplStub;
+import main.jms.connect.RemoteConnectionSender;
+import main.jms.connect.stubs.RemoteConnectionSenderImplStub;
 import main.logger.service.LogService;
 import main.logger.service.stubs.ServiceLogImplStub;
 import org.junit.Before;
@@ -18,7 +18,7 @@ public class MessageProcessorSingleImplTest {
 
     private LogService logService;
     private MarshallingObject marshallingObject;
-    private RemoteConnection remoteConnection;
+    private RemoteConnectionSender remoteConnectionSender;
     private MessageWrapper messageWrapper;
 
     @Before
@@ -26,14 +26,14 @@ public class MessageProcessorSingleImplTest {
     {
         this.logService = new ServiceLogImplStub();
         this.marshallingObject = new MarshallingObjectImplStub();
-        this.remoteConnection = new RemoteConnectionImplStub();
+        this.remoteConnectionSender = new RemoteConnectionSenderImplStub();
         this.messageWrapper = new MessageWrapperImplStub();
     }
 
 
     @Test
     public void execMessage() throws Exception {
-        MessageProcessor messageProcessor = new MessageProcessorSingleImpl(logService, marshallingObject, remoteConnection);
+        MessageProcessor messageProcessor = new MessageProcessorSingleImpl(logService, marshallingObject, remoteConnectionSender);
         messageProcessor.execMessage(messageWrapper);
     }
 

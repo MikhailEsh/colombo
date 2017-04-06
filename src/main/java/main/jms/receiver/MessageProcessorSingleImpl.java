@@ -3,16 +3,16 @@ package main.jms.receiver;
 import main.Utils;
 import main.jms.common.MessageWrapper;
 import main.jms.common.MarshallingObject;
-import main.jms.connect.RemoteConnection;
+import main.jms.connect.RemoteConnectionSender;
 import main.logger.service.LogService;
 import main.logger.service.SystemLog;
 import main.schemas.srvprivateoperstate.PrivateOperStateRq;
 import main.schemas.srvprivateoperstate.PrivateOperStateRs;
 import main.schemas.srvprivateoperstate.StatusType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
@@ -27,17 +27,15 @@ import java.util.concurrent.BlockingQueue;
  * Created by sbt-eshtokin-ml on 31.03.2017.
  */
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class MessageProcessorSingleImpl implements MessageProcessor{
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class MessageProcessorSingleImpl implements MessageProcessor, Runnable{
 
     private BlockingQueue<MessageWrapper> queueMsMessageWrappers;
 
-    public MessageProcessorSingleImpl() {};
-
-    public MessageProcessorSingleImpl(LogService logService, MarshallingObject marshallingObject, RemoteConnection remoteConnection){
+    public MessageProcessorSingleImpl(LogService logService, MarshallingObject marshallingObject, RemoteConnectionSender remoteConnectionSender){
         this.logService = logService;
         this.marshallingObject = marshallingObject;
-        this.remoteConnection = remoteConnection;
+        this.remoteConnectionSender = remoteConnectionSender;
     }
 
     @Autowired
@@ -50,21 +48,19 @@ public class MessageProcessorSingleImpl implements MessageProcessor{
     private MarshallingObject marshallingObject;
 
     @Autowired
-    private RemoteConnection remoteConnection;
+    volatile private RemoteConnectionSender remoteConnectionSender;
 
-    //private final int nameThread;
+    volatile private int nameThread;
 
-    /*public MessageProcessorSingleImpl(){
-        synchronized (MessageProcessorSchedulerImpl.counterThreads) {
-            this.nameThread = MessageProcessorSchedulerImpl.counterThreads.incrementAndGet();
-        }
-    };*/
+    public MessageProcessorSingleImpl(){
 
-    /*@PostConstruct
-    public void init()
-    {
+    };
+
+    @PostConstruct
+    public void init() {
         this.queueMsMessageWrappers = (BlockingQueue<MessageWrapper>)applicationContext.getBean("getQueueMsgWrapForMsgProcessor");
-    }*/
+        this.nameThread = MessageProcessorSchedulerImpl.counterThreads.incrementAndGet();
+    }
 
 
 
@@ -73,14 +69,16 @@ public class MessageProcessorSingleImpl implements MessageProcessor{
     {
         PrivateOperStateRq privateOperStateRq = null;
         try {
-            //Utils.TimeWaite();
+            Utils.TimeWaite();
             privateOperStateRq = (PrivateOperStateRq) marshallingObject.getObject(messageWrapper.getBodyBytes(), PrivateOperStateRq.class);
             logService.saveLog(privateOperStateRq, this.getClass());
             PrivateOperStateRs privateOperStateRs = transformToRs(privateOperStateRq);
             logService.saveLog(privateOperStateRs, this.getClass());
             String xmlRs = marshallingObject.getXML(privateOperStateRs);
             logService.saveLog(xmlRs, this.getClass());
-            remoteConnection.sendRequest(xmlRs);
+            synchronized (remoteConnectionSender) {
+                remoteConnectionSender.sendRequest(xmlRs);
+            }
             System.out.println("Message sent");
         } catch (JAXBException e) {
             SystemLog.SaveErrorLog(this.getClass(), e);
@@ -105,23 +103,15 @@ public class MessageProcessorSingleImpl implements MessageProcessor{
         return privateOperStateRs;
     }
 
-    /*public void run() {
+    public void run() {
         while (true) {
             try {
                 MessageWrapper messageWrapper = queueMsMessageWrappers.take();
                 System.out.println("this.queueMsMessageWrappers.take " + nameThread);
-                execMessageSingleThread(messageWrapper);
+                execMessage(messageWrapper);
             } catch (InterruptedException e) {
                 SystemLog.SaveErrorLog(this.getClass(), e);
             }
         }
-    }*/
-
-    public void setQueueMsMessageWrappers(BlockingQueue<MessageWrapper> queueMsMessageWrappers) {
-        this.queueMsMessageWrappers = queueMsMessageWrappers;
     }
-
-    /*public int getNameThread() {
-        return this.nameThread;
-    }*/
 }
